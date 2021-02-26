@@ -1,28 +1,32 @@
 const User = require('../models/user');
 
-const add = async (req, res) => {
+const add = (req, res) => {
     const { userId, date, duration, description } = req.body;
-    // date ? date : new Date(`${dateYear}-${dateMonth}-${dateDay}`);
-    let optionsDay = { weekday: 'long'};
-    let optionsMonth = { month: 'long'};
-    const year = new Date().getFullYear();
-    const month = new Intl.DateTimeFormat('en-US', optionsMonth).format(new Date());
-    const day = new Intl.DateTimeFormat('en-US', optionsDay).format(new Date());
-    const numberDay = new Date().getDate();
-    console.log(`${day} ${month} ${numberDay} ${year}`);
+
+    if (!duration || !description) {
+        console.log('duration or description not provided.');
+        return res.send(404).json({ error: 'duration or description not provided.' });
+    }
 
     const log = {
-        date,
+        date: date === null || date === ''
+            ? new Date().toDateString()
+            : new Date(date).toDateString(),
         duration,
         description
     };
 
-    User.findByIdAndUpdate(userId, { $push: { log } }, { new: true }, (err, user) => {
-        if (err) return console.error(`findByIdAndUpdate error: ${err}`); 
-        if (!user) res.status(404).json({ error: 'id not found' });   
-        let username = user.username;
-        console.log(userId, username, date, duration, description);
-        res.status(204).json({ userId, username, date, duration, description });
+    User.findByIdAndUpdate(userId, { $push: { log } }, 
+        { upsert: true, new: true }, (err, user) => {
+            if (err) return console.error(`findByIdAndUpdate error: ${err}`); 
+            let username = user.username;
+            res.status(200).json({ 
+                _id: userId, 
+                username, 
+                date: log.date, 
+                duration, 
+                description 
+            });
     });
 }
 

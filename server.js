@@ -8,6 +8,7 @@ const connectDB = require('./utilities/db')
 const handleNewUser = require('./controllers/newUser')
 const findAllUsers = require('./controllers/findAllUsers');
 const addExercise = require('./controllers/add');
+const logExercise = require('./controllers/log');
 
 // Implement a Root-Level Request Logger Middleware
 app.use((req, res, next) => {
@@ -32,7 +33,7 @@ app.get('/', (req, res) => {
 app.post('/api/exercise/new-user', (req, res) => { handleNewUser(req, res) });
 app.get('/api/exercise/users', (req, res) => { findAllUsers(req, res) });
 app.post('/api/exercise/add', (req, res) => { addExercise(req, res) });
-
+app.get('/api/exercise/log', (req, res) => { logExercise(req, res) });
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
