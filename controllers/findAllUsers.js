@@ -5,7 +5,7 @@ const findAllUsers = async (req, res) => {
     let arrayOfUsers = await User.find({})
         .select('_id username');
     try {
-        res.status(200).json({ list: arrayOfUsers });
+        res.status(200).json(arrayOfUsers);
     } catch(err) {
         return console.error(`findAllUsers error: ${err}`);
     }
