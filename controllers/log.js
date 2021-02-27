@@ -2,16 +2,15 @@ const User = require('../models/user');
 
 // test by using this format baseurl/api/exercise/log?userId=_idgoeshere&param1=p1&param2=p2
 const log = (req, res, next) => {
-    const { userId, from, to } = req.query;
-    let { limit } = req.query;
+    let { userId, from, to, limit } = req.query;
 
     User.findById(userId, (err, user) => {
         if (err) {
             console.error(`log error: ${err}`);
             return next(err);
         }
-        const { _id, username } = user;
-        let { log } = user;         
+
+        let { _id, username, log } = user;
         const count = log.length;
 
         if (from) {

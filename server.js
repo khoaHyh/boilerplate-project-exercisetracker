@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const mongoose = require('mongoose')
 require('dotenv').config()
 const bodyParser = require('body-parser')
 const connectDB = require('./utilities/db')
@@ -32,7 +31,7 @@ app.get('/', (req, res) => {
 
 app.post('/api/exercise/new-user', (req, res) => { handleNewUser(req, res) });
 app.get('/api/exercise/users', (req, res) => { findAllUsers(req, res) });
-app.post('/api/exercise/add', (req, res) => { addExercise(req, res) });
+app.post('/api/exercise/add', (req, res, next) => { addExercise(req, res, next) });
 app.get('/api/exercise/log', (req, res, next) => { logExercise(req, res, next) });
 
 const listener = app.listen(process.env.PORT || 3000, () => {
