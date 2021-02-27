@@ -13,16 +13,14 @@ const log = (req, res, next) => {
         let { _id, username, log } = user;
         const count = log.length;
 
-        if (from) {
-            log = log.filter(item => { return item.date.getTime() >= Date.parse(from) });
-        }
-
-        if (to) {
-            log = log.filter(item => { return item.date.getTime() <= Date.parse(to) });
-        }
-
-        if (limit) {
-            log = log.filter((item, i) => i < req.query.limit);
+        // Filter logs if any of the 'from', 'to', and 'limit' query params are given
+        if (from || to || limit) {
+            log = log.filter(item => {
+                let itemDate = item.date.getTime();
+                if (from && to) return itemDate >= Date.parse(from) && itemDate <= Date.parse(to);
+                else if (from && !to) return itemDate >= Date.parse(from);
+                else if (to && !from) return itemDate >= Date.parse(to); 
+            }).slice(0, limit || count);
         }
 
         res.status(200).json({ 
