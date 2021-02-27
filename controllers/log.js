@@ -9,18 +9,27 @@ const log = (req, res, next) => {
             console.error(`log error: ${err}`);
             return next(err);
         }
+        if (!user) {
+            console.error(`no user found with this id.`);
+            return next(err);
+        }
 
         let { _id, username, log } = user;
-        const count = log.length;
+        let count = log.length;
 
         // Filter logs if any of the 'from', 'to', and 'limit' query params are given
-        if (from || to || limit) {
+        if (from || to) {
             log = log.filter(item => {
                 let itemDate = item.date.getTime();
                 if (from && to) return itemDate >= Date.parse(from) && itemDate <= Date.parse(to);
                 else if (from && !to) return itemDate >= Date.parse(from);
                 else if (to && !from) return itemDate >= Date.parse(to); 
-            }).slice(0, limit || count);
+            });
+        }
+
+        if (limit) {
+            log = log.slice(0, limit || count);
+            count = limit;
         }
 
         res.status(200).json({ 
