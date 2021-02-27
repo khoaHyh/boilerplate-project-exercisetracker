@@ -12,7 +12,7 @@ const add = (req, res) => {
         date: date === null || date === ''
             ? new Date().toDateString()
             : new Date(date).toDateString(),
-        duration,
+        duration: parseInt(duration),
         description
     };
 
@@ -24,7 +24,7 @@ const add = (req, res) => {
                 _id: userId, 
                 username, 
                 date: log.date, 
-                duration, 
+                duration: parseInt(duration), 
                 description 
             });
     });
