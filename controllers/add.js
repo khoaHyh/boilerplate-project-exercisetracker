@@ -8,10 +8,17 @@ const add = (req, res, next) => {
         return res.send(404).json({ error: 'duration or description not provided.' });
     }
 
+    // convert Date to required format and handle optional date input
+    const convertDate = () => {
+        let dateString = new Date().toDateString();
+        if (date) dateString = new Date(date).toDateString();
+        return dateString.split(' ')
+            .slice(0, 4)
+            .join(' ')
+    }
+
     const log = {
-        date: date === null || date === ''
-            ? new Date()
-            : new Date(date),
+        date: convertDate(),
         duration: parseInt(duration),
         description
     };
@@ -26,7 +33,7 @@ const add = (req, res, next) => {
             res.status(200).json({ 
                 _id: userId, 
                 username, 
-                date: new Date(log.date).toDateString(), 
+                date: log.date,
                 duration: parseInt(duration), 
                 description 
             });
